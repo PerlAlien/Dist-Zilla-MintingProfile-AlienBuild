@@ -6,6 +6,7 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
 
   use Moose;
   use Moose::Util::TypeConstraints;
+  use experimental qw( signatures );
   use namespace::autoclean;
   use constant myURI => "@{[ __PACKAGE__ ]}::URI";
 
@@ -15,7 +16,13 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
 
   coerce myURI, from 'Str', via {
     require URI;
-    URI->new($_);
+    state $base ||= do {
+      require URI::file;
+      my $base = URI->new(URI::file->cwd);
+      $base->host("localhost");
+      $base;
+    };
+    URI->new_abs($_, $base);
   };
 
   has uri => (
@@ -23,6 +30,54 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
     isa      => myURI,
     required => 1,
     coerce   => 1,
+  );
+
+  has ua => (
+    is      => 'ro',
+    isa     => 'LWP::UserAgent',
+    lazy    => 1,
+    default => sub {
+      require LWP::UserAgent;
+      my $ua = LWP::UserAgent->new;
+      $ua->env_proxy;
+      $ua;
+    },
+  );
+
+  has tarball => (
+    is => 'ro',
+    lazy => 1,
+    default => sub ($self) {
+      my $ua = $self->ua;
+      my $res = $ua->get($self->uri);
+      die $res->status_line
+        unless $res->is_success;
+      $res->decoded_content;
+    },
+  );
+
+  has build_type => (
+    is      => 'ro',
+    isa     => 'ArrayRef[Str]',
+    lazy    => 1,
+    default => sub ($self) {
+
+      require Path::Tiny;
+      my $file = Path::Tiny->tempfile;
+      $file->spew_raw($self->tarball);
+
+      my %types;
+
+      require Archive::Libarchive::Peek;
+      foreach my $file (map { Path::Tiny->new($_) } Archive::Libarchive::Peek->new( filename => $file )->files)
+      {
+        $types{autoconf} = 1 if $file->basename eq 'configure';
+        $types{cmake} = 1    if $file->basename eq 'CMakeLists.txt';
+        $types{make} = 1     if $file->basename eq 'Makefile';
+      }
+
+      [sort keys %types];
+    },
   );
 
   __PACKAGE__->meta->make_immutable;

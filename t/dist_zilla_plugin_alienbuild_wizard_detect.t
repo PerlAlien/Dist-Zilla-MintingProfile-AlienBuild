@@ -13,6 +13,18 @@ is(
       call host => 'localhost';
       call path => '/foo/bar/baz';
     };
+    call ua => object {
+      call [ isa => 'LWP::UserAgent' ] => T();
+    };
+  },
+);
+
+is(
+  Dist::Zilla::Plugin::AlienBuild::Wizard::Detect->new(
+    uri => 'corpus/dist_zilla_plugin_alienbuild_wizard_detect/auto-1.2.3.tar',
+  ),
+  object {
+    call build_type => ['autoconf'];
   },
 );
 
