@@ -45,14 +45,15 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
   );
 
   has tarball => (
-    is => 'ro',
-    lazy => 1,
+    is      => 'ro',
+    lazy    => 1,
+    isa     => 'ScalarRef[Str]',
     default => sub ($self) {
       my $ua = $self->ua;
       my $res = $ua->get($self->uri);
       die $res->status_line
         unless $res->is_success;
-      $res->decoded_content;
+      \$res->decoded_content;
     },
   );
 
@@ -62,14 +63,10 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
     lazy    => 1,
     default => sub ($self) {
 
-      require Path::Tiny;
-      my $file = Path::Tiny->tempfile;
-      $file->spew_raw($self->tarball);
-
       my %types;
 
       require Archive::Libarchive::Peek;
-      foreach my $file (map { Path::Tiny->new($_) } Archive::Libarchive::Peek->new( filename => $file )->files)
+      foreach my $file (map { Path::Tiny->new($_) } Archive::Libarchive::Peek->new( memory => $self->tarball )->files)
       {
         $types{autoconf} = 1 if $file->basename eq 'configure';
         $types{cmake} = 1    if $file->basename eq 'CMakeLists.txt';
