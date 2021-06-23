@@ -15,10 +15,12 @@ $modules{$_} = $_ for qw(
   ExtUtils::MakeMaker
   File::ShareDir::Install
   Moose
+  Moose::Util::TypeConstraints
   Path::Tiny
   Test2::V0
   Test::DZil
   Test::File::ShareDir::Module
+  URI
   namespace::autoclean
 );
 
