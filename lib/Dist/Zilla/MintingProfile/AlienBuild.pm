@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use 5.020;
+use 5.022;
 
 package Dist::Zilla::MintingProfile::AlienBuild {
 
