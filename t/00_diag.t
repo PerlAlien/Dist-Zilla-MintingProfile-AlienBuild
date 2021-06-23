@@ -10,10 +10,12 @@ my %modules;
 my $post_diag;
 
 $modules{$_} = $_ for qw(
+  Archive::Libarchive::Peek
   Dist::Zilla::PluginBundle::Starter
   Dist::Zilla::Role::MintingProfile::ShareDir
   ExtUtils::MakeMaker
   File::ShareDir::Install
+  LWP::UserAgent
   Moose
   Moose::Util::TypeConstraints
   Path::Tiny
@@ -21,6 +23,7 @@ $modules{$_} = $_ for qw(
   Test::DZil
   Test::File::ShareDir::Module
   URI
+  URI::file
   namespace::autoclean
 );
 
