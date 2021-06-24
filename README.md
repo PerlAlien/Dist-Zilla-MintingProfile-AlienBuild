@@ -1,4 +1,4 @@
-# Dist::Zilla::MintingProfile::AlienBuild ![linux](https://github.com/PerlAlien/Dist-Zilla-MintingProfile-AlienBuild/workflows/linux/badge.svg)
+# Dist::Zilla::MintingProfile::AlienBuild ![static](https://github.com/PerlAlien/Dist-Zilla-MintingProfile-AlienBuild/workflows/static/badge.svg) ![linux](https://github.com/PerlAlien/Dist-Zilla-MintingProfile-AlienBuild/workflows/linux/badge.svg)
 
 A minimal Dist::Zilla minting profile for Aliens
 
