@@ -12,15 +12,17 @@ dzil new -P AlienBuild Alien::libfoo
 
 This is a [Dist::Zilla](https://metacpan.org/pod/Dist::Zilla) minting profile for creating [Alien](https://metacpan.org/pod/Alien) distributions
 based on the [Alien::Build](https://metacpan.org/pod/Alien::Build) framework.  It uses a reasonable template and the
-[\[@AlienBuild\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::AlienBuild) bundle, which is itself
-based on the [\[@Starter\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter) bundle.
+[\[@Starter\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::AlienBuild) or
+[\[@Starter::Git\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter::Git) bundle plus the
+[\[AlienBuild\]](https://metacpan.org/pod/Dist::Zilla::Plugin::AlienBuild) plugin.
 
 # SEE ALSO
 
 - [Alien](https://metacpan.org/pod/Alien)
 - [Alien::Build](https://metacpan.org/pod/Alien::Build)
 - [alienfile](https://metacpan.org/pod/alienfile)
-- [\[@AlienBuild\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::AlienBuild)
+- [\[@Starter\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter)
+- [\[@Starter::Git\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter::Git)
 - [\[AlienBuild\]](https://metacpan.org/pod/Dist::Zilla::Plugin::AlienBuild)
 
 # AUTHOR

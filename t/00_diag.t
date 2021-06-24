@@ -10,6 +10,7 @@ my %modules;
 my $post_diag;
 
 $modules{$_} = $_ for qw(
+  Dist::Zilla::PluginBundle::Starter
   Dist::Zilla::Role::MintingProfile::ShareDir
   ExtUtils::MakeMaker
   File::ShareDir::Install
