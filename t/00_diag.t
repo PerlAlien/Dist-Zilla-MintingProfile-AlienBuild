@@ -18,6 +18,7 @@ $modules{$_} = $_ for qw(
   LWP::UserAgent
   Moose
   Moose::Util::TypeConstraints
+  MooseX::StrictConstructor
   Path::Tiny
   Test2::V0
   Test::DZil
