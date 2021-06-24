@@ -6,6 +6,7 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
 
   use Moose;
   use Moose::Util::TypeConstraints;
+  use MooseX::StrictConstructor;
   use experimental qw( signatures );
   use namespace::autoclean;
   use constant myURI => "@{[ __PACKAGE__ ]}::URI";
@@ -45,10 +46,11 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
   );
 
   has tarball => (
-    is      => 'ro',
-    lazy    => 1,
-    isa     => 'ScalarRef[Str]',
-    default => sub ($self) {
+    is       => 'ro',
+    lazy     => 1,
+    isa      => 'ScalarRef[Str]',
+    init_arg => undef,
+    default  => sub ($self) {
       my $ua = $self->ua;
       my $res = $ua->get($self->uri);
       die $res->status_line
@@ -58,10 +60,11 @@ package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
   );
 
   has build_type => (
-    is      => 'ro',
-    isa     => 'ArrayRef[Str]',
-    lazy    => 1,
-    default => sub ($self) {
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    lazy     => 1,
+    init_arg => undef,
+    default  => sub ($self) {
 
       my %types;
 
