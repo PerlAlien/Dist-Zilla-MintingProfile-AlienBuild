@@ -4,4 +4,3 @@ set -ex
 
 cip sudo apt-get update
 cip sudo apt-get install libffi-dev libarchive-dev
-cip exec cpanm -n https://dist.wdlabs.com/Dist-Zilla-PluginBundle-AlienBuild-0.01.tar.gz
