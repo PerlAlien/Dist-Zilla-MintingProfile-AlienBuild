@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use 5.022;
 
-package Dist::Zilla::Plugin::AlienBuild::Wizard::Detect {
+package Alien::Build::Wizard {
 
   use Moose;
   use Moose::Util::TypeConstraints;
