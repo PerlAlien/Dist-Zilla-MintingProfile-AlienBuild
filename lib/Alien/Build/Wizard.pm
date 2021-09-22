@@ -7,121 +7,126 @@ package Alien::Build::Wizard {
   use Moose;
   use Moose::Util::TypeConstraints;
   use MooseX::StrictConstructor;
-  use Path::Tiny ();
   use experimental qw( signatures postderef );
+  use Data::Section::Simple qw( get_data_section );
   use namespace::autoclean;
-  use constant myURI => "@{[ __PACKAGE__ ]}::URI";
 
-  # ABSTRACT: Tarball detection class
-
-  subtype myURI, as 'URI';
-
-  coerce myURI, from 'Str', via {
-    require URI;
-    state $base ||= do {
-      require URI::file;
-      my $base = URI->new(URI::file->cwd);
-      $base->host("localhost");
-      $base;
-    };
-    URI->new_abs($_, $base);
-  };
-
-  has uri => (
+  has detect => (
     is       => 'ro',
-    isa      => myURI,
-    required => 1,
-    coerce   => 1,
+    isa      => 'Alien::Build::Wizard::Detect',
+    lazy     => 1,
+    default => sub ($self) {
+      for(1..20)
+      {
+        my $url = $self->chrome->ask('Enter the full URL to the latest tarball (or zip, etc.) of the project you want to alienize.');
+        die "URL is required" if $url eq '';
+
+        require Alien::Build::Wizard::Detect;
+        my $detect = eval { Alien::Build::Wizard::Detect->new( uri => $url ) };
+        if(my $error = $@)
+        {
+          $self->chrome->say("there appears to have been a problem fetching or detecting that tarball.");
+          $self->chrome->say("$error");
+        }
+        else
+        {
+          return $detect;
+        }
+      }
+      die "Bailing unable to get good input";
+    },
   );
 
-  has ua => (
+  has chrome => (
     is      => 'ro',
-    isa     => 'LWP::UserAgent',
+    isa     => 'Alien::Build::Wizard::Chrome',
     lazy    => 1,
-    default => sub {
-      require LWP::UserAgent;
-      my $ua = LWP::UserAgent->new;
-      $ua->env_proxy;
-      $ua;
+    default => sub ($self) {
+      require Alien::Build::Wizard::Chrome;
+      Alien::Build::Wizard::Chrome->new;
     },
   );
 
-  has tarball => (
-    is       => 'ro',
-    lazy     => 1,
-    isa      => 'ScalarRef[Str]',
-    init_arg => undef,
-    default  => sub ($self) {
-      my $ua = $self->ua;
-      my $res = $ua->get($self->uri);
-      die $res->status_line
-        unless $res->is_success;
-      \$res->decoded_content;
+  has class_name => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub ($self) {
+      $self->chrome->ask('What is the class name for your Alien?', 'Alien::' . $self->detect->name);
     },
   );
 
-  has file_list => (
-    is       => 'ro',
-    isa      => 'ArrayRef[Path::Tiny]',
-    lazy     => 1,
-    init_arg => undef,
-    default  => sub ($self) {
-      require Archive::Libarchive::Peek;
-      [map { Path::Tiny->new($_) } Archive::Libarchive::Peek->new( memory => $self->tarball )->files];
-    }
+  has human_name => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub ($self) {
+      $self->chrome->ask('What is the human project name of the alienized package?', $self->detect->name);
+    },
+  );
+
+  has pkg_names => (
+    is      => 'ro',
+    isa     => 'ArrayRef[Str]',
+    lazy    => 1,
+    default => sub ($self) {
+      [split /\s+/, $self->chrome->ask('Which pkg-config names (if any) should be used to detect system install?  You may space separate multiple names.', join ' ', $self->detect->pkg_config->@*)];
+    },
   );
 
   has build_type => (
-    is       => 'ro',
-    isa      => 'ArrayRef[Str]',
-    lazy     => 1,
-    init_arg => undef,
-    default  => sub ($self) {
-
-      my %types;
-
-      foreach my $file ($self->file_list->@*)
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub ($self) {
+      my @types = $self->detect->build_type->@*;
+      if(@types == 0)
       {
-        $types{autoconf} = 1 if $file->basename eq 'configure';
-        $types{cmake} = 1    if $file->basename eq 'CMakeLists.txt';
-        $types{make} = 1     if $file->basename eq 'Makefile';
+        $self->chrome->say("Unable to detect build system used by the package.  You can select manual to specify the build commands directly, or select one of the standard build systems");
       }
-
-      [sort keys %types];
-    },
-  );
-
-  has name => (
-    is       => 'ro',
-    isa      => 'Str',
-    lazy     => 1,
-    init_arg => undef,
-    default  => sub ($self) {
-      Path::Tiny->new($self->uri->path)->basename =~ s/[-\.].*$//r;
-    },
-  );
-
-  has pkg_config => (
-    is       => 'ro',
-    isa      => 'ArrayRef[Str]',
-    lazy     => 1,
-    init_arg => undef,
-    default  => sub ($self) {
-
-      my %pc;
-
-      foreach my $file ($self->file_list->@*)
+      elsif(@types == 1)
       {
-        $pc{$1} = 1 if $file->basename =~ /^(.*)\.pc(\.in)?$/;
+        $self->chrome->say("The build system was detected as $types[0]; that is probably correct");
       }
-
-      [sort keys %pc];
+      else
+      {
+        $self->chrome->say("Multiple build systems were detected in the tarball; select the most reliable one of: @types");
+      }
+      my $default = $types[0];
+      $self->chrome->choose("Choose build system.", ['manual','autoconf','cmake','make'], $types[0]);
     },
   );
 
-  __PACKAGE__->meta->make_immutable;
+  sub generate_content ($self)
+  {
+    my %files;
+
+    require Template;
+    my $tt = Template->new;
+
+    {
+      my $pm = $self->class_name . ".pm";
+      $pm =~ s{::}{/};
+      my $template = get_data_section 'Module.pm';
+      $template =~ s/\s+$/\n/;
+      die "no template Module.pm" unless $template;
+      $tt->process(\$template, { wizard => $self }, \($files{$pm} = '')) or die $tt->error;
+    }
+
+    foreach my $path (qw( alienfile ))
+    {
+      my $template = get_data_section $path;
+      $template =~ s/\s+$/\n/;
+      die "no template $path" unless $template;
+      $tt->process(\$template, { wizard => $self }, \($files{$path} = '')) or die $tt->error;
+    }
+
+    \%files;
+  }
 
 }
+
+package Alien::Build::Wizard;
 
 1;
 
@@ -142,3 +147,18 @@ This class is private.
 =back
 
 =cut
+
+__DATA__
+
+@@ Module.pm
+package [% wizard.class_name %];
+
+use strict;
+use warnings;
+use base qw( Alien::Base );
+use 5.008004;
+
+1;
+
+@@ alienfile
+use alienfile;

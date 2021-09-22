@@ -11,6 +11,7 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   Archive::Libarchive::Peek
+  Data::Section::Simple
   Dist::Zilla::PluginBundle::Starter
   Dist::Zilla::Role::MintingProfile::ShareDir
   ExtUtils::MakeMaker
@@ -20,6 +21,7 @@ $modules{$_} = $_ for qw(
   Moose::Util::TypeConstraints
   MooseX::StrictConstructor
   Path::Tiny
+  Template
   Test2::V0
   Test::DZil
   Test::File::ShareDir::Module
