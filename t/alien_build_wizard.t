@@ -1,12 +1,12 @@
 use Test2::V0 -no_srand => 1;
-use Dist::Zilla::Plugin::AlienBuild::Wizard::Detect;
+use Alien::Build::Wizard;
 
 is(
-  Dist::Zilla::Plugin::AlienBuild::Wizard::Detect->new(
+  Alien::Build::Wizard->new(
     uri => "file://localhost/foo/bar/baz",
   ),
   object {
-    call [ isa => 'Dist::Zilla::Plugin::AlienBuild::Wizard::Detect' ] => T();
+    call [ isa => 'Alien::Build::Wizard' ] => T();
     call uri => object {
       call [ isa => 'URI' ] => T();
       call scheme => 'file';
@@ -20,8 +20,8 @@ is(
 );
 
 is(
-  Dist::Zilla::Plugin::AlienBuild::Wizard::Detect->new(
-    uri => 'corpus/dist_zilla_plugin_alienbuild_wizard_detect/auto-1.2.3.tar',
+  Alien::Build::Wizard->new(
+    uri => 'corpus/alien_build_wizard/auto-1.2.3.tar',
   ),
   object {
     call build_type => ['autoconf'];
