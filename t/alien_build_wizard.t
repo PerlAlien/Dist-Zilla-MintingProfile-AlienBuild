@@ -16,6 +16,7 @@ is(
     call ua => object {
       call [ isa => 'LWP::UserAgent' ] => T();
     };
+    call name => 'baz';
   },
 );
 
@@ -25,6 +26,8 @@ is(
   ),
   object {
     call build_type => ['autoconf'];
+    call name       => 'auto';
+    call pkg_config => ['bar','foo'];
   },
 );
 

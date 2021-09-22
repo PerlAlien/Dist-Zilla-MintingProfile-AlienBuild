@@ -7,7 +7,8 @@ package Alien::Build::Wizard {
   use Moose;
   use Moose::Util::TypeConstraints;
   use MooseX::StrictConstructor;
-  use experimental qw( signatures );
+  use Path::Tiny ();
+  use experimental qw( signatures postderef );
   use namespace::autoclean;
   use constant myURI => "@{[ __PACKAGE__ ]}::URI";
 
@@ -59,6 +60,17 @@ package Alien::Build::Wizard {
     },
   );
 
+  has file_list => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Path::Tiny]',
+    lazy     => 1,
+    init_arg => undef,
+    default  => sub ($self) {
+      require Archive::Libarchive::Peek;
+      [map { Path::Tiny->new($_) } Archive::Libarchive::Peek->new( memory => $self->tarball )->files];
+    }
+  );
+
   has build_type => (
     is       => 'ro',
     isa      => 'ArrayRef[Str]',
@@ -68,8 +80,7 @@ package Alien::Build::Wizard {
 
       my %types;
 
-      require Archive::Libarchive::Peek;
-      foreach my $file (map { Path::Tiny->new($_) } Archive::Libarchive::Peek->new( memory => $self->tarball )->files)
+      foreach my $file ($self->file_list->@*)
       {
         $types{autoconf} = 1 if $file->basename eq 'configure';
         $types{cmake} = 1    if $file->basename eq 'CMakeLists.txt';
@@ -77,6 +88,34 @@ package Alien::Build::Wizard {
       }
 
       [sort keys %types];
+    },
+  );
+
+  has name => (
+    is       => 'ro',
+    isa      => 'Str',
+    lazy     => 1,
+    init_arg => undef,
+    default  => sub ($self) {
+      Path::Tiny->new($self->uri->path)->basename =~ s/[-\.].*$//r;
+    },
+  );
+
+  has pkg_config => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    lazy     => 1,
+    init_arg => undef,
+    default  => sub ($self) {
+
+      my %pc;
+
+      foreach my $file ($self->file_list->@*)
+      {
+        $pc{$1} = 1 if $file->basename =~ /^(.*)\.pc(\.in)?$/;
+      }
+
+      [sort keys %pc];
     },
   );
 
