@@ -1,9 +1,17 @@
 use Test2::V0 -no_srand => 1;
 use Test::DZil;
+use lib 't/lib';
+use Helper;
 use Path::Tiny qw( path );
 use Test::File::ShareDir::Module { 'Dist::Zilla::MintingProfile::AlienBuild' => 'profiles' };
 
+require Alien::Build::Wizard;
+require Alien::Build::Wizard::Detect;
+
 subtest 'basic' => sub {
+
+  local $Alien::Build::Wizard::Chrome::ask{'Enter the full URL to the latest tarball (or zip, etc.) of the project you want to alienize.'} = [path('corpus/alien_build_wizard/auto-1.2.3.tar')->absolute->stringify];
+  local $Alien::Build::Wizard::Chrome::use_default = 1;
 
   my $tzil = Minter->_new_from_profile(
     [ AlienBuild => 'default' ],

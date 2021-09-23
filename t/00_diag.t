@@ -13,6 +13,7 @@ $modules{$_} = $_ for qw(
   Archive::Libarchive::Peek
   Data::Section::Simple
   Dist::Zilla::PluginBundle::Starter
+  Dist::Zilla::Role::FileGatherer
   Dist::Zilla::Role::MintingProfile::ShareDir
   ExtUtils::MakeMaker
   File::ShareDir::Install
@@ -22,6 +23,7 @@ $modules{$_} = $_ for qw(
   MooseX::StrictConstructor
   Path::Tiny
   Template
+  Term::Clui
   Test2::V0
   Test::DZil
   Test::File::ShareDir::Module

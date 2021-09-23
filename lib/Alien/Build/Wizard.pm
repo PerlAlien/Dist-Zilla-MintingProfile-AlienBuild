@@ -9,6 +9,7 @@ package Alien::Build::Wizard {
   use MooseX::StrictConstructor;
   use experimental qw( signatures postderef );
   use Data::Section::Simple qw( get_data_section );
+  use Alien::Build::Wizard::Detect;
   use namespace::autoclean;
 
   has detect => (
@@ -26,7 +27,6 @@ package Alien::Build::Wizard {
           next;
         }
 
-        require Alien::Build::Wizard::Detect;
         my $detect = eval { Alien::Build::Wizard::Detect->new( uri => $url ) };
         if(my $error = $@)
         {
@@ -144,7 +144,7 @@ package Alien::Build::Wizard {
     my $tt = Template->new;
 
     {
-      my $pm = $self->class_name . ".pm";
+      my $pm = 'lib/' . $self->class_name . ".pm";
       $pm =~ s{::}{/};
       my $template = get_data_section 'Module.pm';
       $template =~ s/\s+$/\n/;
