@@ -6,7 +6,20 @@ package Alien::Build::Wizard::Chrome {
 
   use Moose;
   use experimental qw( signatures postderef );
+  use Term::Clui ();
   use namespace::autoclean;
+
+  sub ask ($self, $prompt, $default=undef) {
+    Term::Clui::ask($prompt, $default);
+  }
+
+  sub choose ($self, $prompt, $options, $default=undef) {
+    Term::Clui::choose($prompt, $options->@*);
+  }
+
+  sub say ($self, $string) {
+    CORE::say($string);
+  }
 
 }
 
