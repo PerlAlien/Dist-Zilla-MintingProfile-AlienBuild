@@ -15,6 +15,7 @@ $modules{$_} = $_ for qw(
   Dist::Zilla::PluginBundle::Starter
   Dist::Zilla::Role::FileGatherer
   Dist::Zilla::Role::MintingProfile::ShareDir
+  Dist::Zilla::Role::ModuleMaker
   ExtUtils::MakeMaker
   File::ShareDir::Install
   LWP::UserAgent
