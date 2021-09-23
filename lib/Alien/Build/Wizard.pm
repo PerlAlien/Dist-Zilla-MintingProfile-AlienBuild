@@ -12,6 +12,8 @@ package Alien::Build::Wizard {
   use Alien::Build::Wizard::Detect;
   use namespace::autoclean;
 
+  # ABSTRACT: Alien distribution creation wizard
+
   has detect => (
     is       => 'ro',
     isa      => 'Alien::Build::Wizard::Detect',
