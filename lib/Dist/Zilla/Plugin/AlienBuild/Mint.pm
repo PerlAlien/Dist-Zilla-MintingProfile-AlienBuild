@@ -8,21 +8,30 @@ package Dist::Zilla::Plugin::AlienBuild::Mint {
   with 'Dist::Zilla::Role::FileGatherer', 'Dist::Zilla::Role::ModuleMaker';
   use experimental qw( signatures postderef );
   use Alien::Build::Wizard;
+  use Dist::Zilla::File::InMemory;
   use namespace::autoclean;
 
   # ABSTRACT: Generate module and alienfile for use with Alien::Build
 
+  has class_name => (
+    is       => 'ro',
+    isa      => 'Str',
+    init_arg => undef,
+    lazy     => 1,
+    default  => sub ($self) {
+      $self->zilla->name =~ s/-/::/gr;
+    },
+  );
+
   has generated_content => (
-    is => 'ro',
-    isa => 'HashRef[Str]',
+    is       => 'ro',
+    isa      => 'HashRef[Str]',
     init_arg => undef,
     lazy     => 1,
     default  => sub ($self) {
 
-      my $class_name = $self->zilla->name;
-      $class_name =~ s/-/::/g;
       my $wizard = Alien::Build::Wizard->new(
-        class_name => $class_name
+        class_name => $self->class_name
       );
 
       my %files = $wizard->generate_content->%*;
@@ -53,7 +62,7 @@ package Dist::Zilla::Plugin::AlienBuild::Mint {
   sub make_module ($self, $arg)
   {
     my %files = $self->generated_content->%*;
-    $self->log_fatal("Confused by module filename") unless defined $files{$arg->{name}};
+    $self->log_fatal("Confused by module filename") unless defined $arg->{name} ne $self->class_name;
     foreach my $filename (sort keys %files)
     {
       # TODO: needs updating if we have other generated
