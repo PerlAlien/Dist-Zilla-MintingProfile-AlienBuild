@@ -61,6 +61,15 @@ package Alien::Build::Wizard {
     },
   );
 
+  has start_url => (
+    is      => 'ro',
+    isa     => 'URI',
+    lazy    => 1,
+    default => sub ($self) {
+      $self->detect->uri;
+    },
+  );
+
   has human_name => (
     is      => 'ro',
     isa     => 'Str',
@@ -76,6 +85,31 @@ package Alien::Build::Wizard {
     lazy    => 1,
     default => sub ($self) {
       [split /\s+/, $self->chrome->ask('Which pkg-config names (if any) should be used to detect system install?  You may space separate multiple names.', join ' ', $self->detect->pkg_config->@*)];
+    },
+  );
+
+  has extract_format => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub ($self) {
+      my $basename = Path::Tiny->new($self->detect->uri->path)->basename;
+
+      # tar format is usually .tar or .tar.gz .tar.bz2 etc.
+      if($basename =~ /\.(tar(\..*)?)$/)
+      {
+        return $1;
+      }
+      # non-greedy to only get the last . for non tars
+      elsif($basename =~ /\.(.*?)$/)
+      {
+        return $1;
+      }
+      # fallback on .fixme, user will probably have to update
+      else
+      {
+        return 'fixme';
+      }
     },
   );
 
@@ -165,5 +199,89 @@ use 5.008004;
 
 1;
 
+=head1 NAME
+
+[% wizard.class_name %] - Find or build [% wizard.human_name %]
+
+=head1 SYNOPSIS
+
+ # TODO
+
+=head1 DESCRIPTION
+
+This distribution provides [% wizard.human_name %] so that it can be used by other
+Perl distributions that are on CPAN.  It does this by first trying to
+detect an existing install of [% wizard.human_name %] on your system.  If found it
+will use that.  If it cannot be found, the source code will be downloaded
+from the internet and it will be installed in a private share location
+for the use of other modules.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Alien>
+
+Documentation on the Alien concept itself.
+
+=item L<Alien::Base>
+
+The base class for this Alien.
+
+=back
+
+=cut
+
 @@ alienfile
 use alienfile;
+
+[% IF wizard.pkg_names.size > 0 -%]
+plugin PkgConfig => [% IF wizard.pkg_names.size > 1 %][[% FOREACH name IN wizard.pkg_names %]'[% name %]'[% UNLESS loop.last %], [% END %][% END %]][% ELSE %]'[% wizard.pkg_names.0 %]'[% END %];
+[% ELSE -%]
+# replace this with your own system probe.
+# See Alien::Build::Plugin::Probe and
+# Alien::Build::Plugin::PkgConfig for common
+# probe plugins.
+probe sub { 'share' }
+[% END -%]
+
+build {
+  start_url '[% wizard.start_url %]';
+  plugin Download => ();
+[% IF wizard.extract_format == 'fixme' -%]
+
+  # archive format was not detected, see
+  # https://metacpan.org/pod/Alien::Build::Plugin::Extract::Negotiate
+  # for valid formats.
+[% END -%]
+  plugin Extract => '[% wizard.extract_format %]';
+[% IF wizard.built_type == 'manual' -%]
+  build [
+    # TODO
+    # See https://metacpan.org/pod/alienfile#build
+  ]
+[% ELSIF wizard.build_type == 'autoconf' -%]
+  plugin 'Build::Autoconf';
+  build [
+    '%{configure}',
+    '%{make}',
+    '%{make} install',
+  ];
+[% ELSIF wizard.build_type == 'cmake' -%]
+  plugin 'Build::CMake';
+  build [
+    ['%{cmake}', @{ meta->prop->{plugin_build_cmake}->{args} }, '%{.install.extract}'],
+    '%{make}',
+    '%{make} install',
+  ];
+[% ELSIF wizard.build_type == 'make' -%]
+  build [
+    # NOTE: you will probably need to set a PREFIX and possibly DISTDIR
+    # https://metacpan.org/pod/Alien::Build#prefix1
+    # https://metacpan.org/pod/Alien::Build#destdir
+    '%{make}',
+    '%{make} install',
+  ];
+[% END -%]
+  plugin 'Gather::IsolateDynamic';
+}
