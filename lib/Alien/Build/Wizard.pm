@@ -245,7 +245,7 @@ plugin PkgConfig => [% IF wizard.pkg_names.size > 1 %][[% FOREACH name IN wizard
 probe sub { 'share' }
 [% END -%]
 
-build {
+share {
   start_url '[% wizard.start_url %]';
   plugin Download => ();
 [% IF wizard.extract_format == 'fixme' -%]
