@@ -38,6 +38,7 @@ subtest 'basic' => sub {
     alienfile
     dist.ini
     lib/Alien/libfoo.pm
+    t/basic.t
   )], 'minted the correct files';
 
 };

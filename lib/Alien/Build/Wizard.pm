@@ -152,7 +152,7 @@ package Alien::Build::Wizard {
       $tt->process(\$template, { wizard => $self }, \($files{$pm} = '')) or die $tt->error;
     }
 
-    foreach my $path (qw( alienfile ))
+    foreach my $path (qw( alienfile t/basic.t ))
     {
       my $template = get_data_section $path;
       $template =~ s/\s+$/\n/;
@@ -285,3 +285,14 @@ share {
 [% END -%]
   plugin 'Gather::IsolateDynamic';
 }
+
+@@ t/basic.t
+use Test2::V0;
+use Test::Alien;
+use Test::Alien::Diag;
+use [% wizard.class_name %];
+
+alien_diag '[% wizard.class_name %]';
+alien_ok '[% wizard.class_name %]';
+
+done_testing;

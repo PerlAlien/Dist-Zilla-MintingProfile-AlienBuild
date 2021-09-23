@@ -10,7 +10,8 @@ package Alien::Build::Wizard::Chrome {
   use namespace::autoclean;
 
   sub ask ($self, $prompt, $default=undef) {
-    Term::Clui::ask($prompt, $default);
+    $self->say($prompt);
+    Term::Clui::ask("> ", $default);
   }
 
   sub choose ($self, $prompt, $options, $default=undef) {

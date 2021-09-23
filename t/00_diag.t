@@ -12,6 +12,7 @@ my $post_diag;
 $modules{$_} = $_ for qw(
   Archive::Libarchive::Peek
   Data::Section::Simple
+  Dist::Zilla::File::InMemory
   Dist::Zilla::PluginBundle::Starter
   Dist::Zilla::Role::FileGatherer
   Dist::Zilla::Role::MintingProfile::ShareDir
