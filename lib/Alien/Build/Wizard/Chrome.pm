@@ -9,6 +9,8 @@ package Alien::Build::Wizard::Chrome {
   use Term::Clui ();
   use namespace::autoclean;
 
+  # ABSTRACT: Wizard chrome
+
   sub ask ($self, $prompt, $default=undef) {
     $self->say($prompt);
     Term::Clui::ask("> ", $default);
