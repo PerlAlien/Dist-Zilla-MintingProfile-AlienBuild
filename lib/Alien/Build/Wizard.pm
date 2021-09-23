@@ -19,7 +19,12 @@ package Alien::Build::Wizard {
       for(1..20)
       {
         my $url = $self->chrome->ask('Enter the full URL to the latest tarball (or zip, etc.) of the project you want to alienize.');
-        die "URL is required" if $url eq '';
+
+        if($url eq '')
+        {
+          $self->chrome->say("URL is required");
+          next;
+        }
 
         require Alien::Build::Wizard::Detect;
         my $detect = eval { Alien::Build::Wizard::Detect->new( uri => $url ) };
