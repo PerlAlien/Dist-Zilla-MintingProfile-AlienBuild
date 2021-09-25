@@ -12,7 +12,7 @@ dzil new -P AlienBuild Alien::libfoo
 
 This is a [Dist::Zilla](https://metacpan.org/pod/Dist::Zilla) minting profile for creating [Alien](https://metacpan.org/pod/Alien) distributions
 based on the [Alien::Build](https://metacpan.org/pod/Alien::Build) framework.  It uses a reasonable template and the
-[\[@Starter\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::AlienBuild) or
+[\[@Starter\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter) or
 [\[@Starter::Git\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter::Git) bundle plus the
 [\[AlienBuild\]](https://metacpan.org/pod/Dist::Zilla::Plugin::AlienBuild) plugin.
 
