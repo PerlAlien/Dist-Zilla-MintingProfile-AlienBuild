@@ -23,7 +23,7 @@ package Dist::Zilla::MintingProfile::AlienBuild {
 
 This is a L<Dist::Zilla> minting profile for creating L<Alien> distributions
 based on the L<Alien::Build> framework.  It uses a reasonable template and the
-L<[@Starter]|Dist::Zilla::PluginBundle::AlienBuild> or
+L<[@Starter]|Dist::Zilla::PluginBundle::Starter> or
 L<[@Starter::Git]|Dist::Zilla::PluginBundle::Starter::Git> bundle plus the
 L<[AlienBuild]|Dist::Zilla::Plugin::AlienBuild> plugin.
 
