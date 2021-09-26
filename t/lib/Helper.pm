@@ -6,7 +6,7 @@ use warnings;
 package Alien::Build::Wizard::Chrome {
 
   use Moose;
-  use experimental qw( signatures );
+  use experimental qw( signatures postderef );
   use namespace::autoclean;
 
   our $use_default;
