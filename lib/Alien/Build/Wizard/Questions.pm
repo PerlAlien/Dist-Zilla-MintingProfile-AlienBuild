@@ -5,11 +5,15 @@ use 5.022;
 package Alien::Build::Wizard::Questions {
 
   use Exporter qw( import );
-  use constant QUESTION_URL => 'Enter the full URL to the latest tarball (or zip, etc.) of the project you want to alienize.';
+  use constant QUESTION_URL          => 'Enter the full URL to the latest tarball (or zip, etc.) of the project you want to alienize.';
+  use constant QUESTION_CLASS_NAME   => 'What is the class name for your Alien?';
+  use constant QUESTION_HUMAN_NAME   => 'What is the human project name of the alienized package?';
+  use constant QUESTION_PKG_NAMES    => 'Which pkg-config names (if any) should be used to detect system install?  You may space separate multiple names.';
+  use constant QUESTION_BUILD_SYSTEM => 'Choose build system.';
 
   # ABSTRACT: List of questions
 
-  our @EXPORT_OK   = sort grep /^QUESTION/, keys %Alien::Build::Wizard::Questions::;
+  our @EXPORT_OK   = sort grep /^QUESTION_/, keys %Alien::Build::Wizard::Questions::;
   our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 }
