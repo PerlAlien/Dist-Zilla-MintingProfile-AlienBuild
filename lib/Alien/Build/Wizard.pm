@@ -69,7 +69,18 @@ package Alien::Build::Wizard {
     isa     => 'URI',
     lazy    => 1,
     default => sub ($self) {
-      $self->detect->uri;
+      if($self->latest)
+      {
+        my $url = $self->detect->uri->clone;
+        my $path = $url->path;
+        $path =~ s{/[^/]*?$}{};
+        $url->path($path);
+        return $url;
+      }
+      else
+      {
+        return $self->detect->uri;
+      }
     },
   );
 
@@ -158,12 +169,38 @@ package Alien::Build::Wizard {
     }
   );
 
+  has latest => (
+    is      => 'ro',
+    isa     => 'Int',
+    lazy    => 1,
+    default => sub ($self) {
+      my $value = $self->chrome->choose(QUESTION_LATEST, ['latest','specific'], ['latest']);
+      $value eq 'latest' ? 1 : 0;
+    },
+  );
+
+  has prefix => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub ($self) {
+      my $path = $self->detect->uri->path;
+      my($file) = $path =~ /\/([^\/]*?)$/;
+      my($prefix) = $file =~ /^([^-^\.]+)/;
+      $prefix;
+    }
+  );
+
   sub generate_content ($self)
   {
     my %files;
 
     require Template;
-    my $tt = Template->new;
+    my $tt = Template->new(
+      FILTERS => {
+        regex_escape => sub ($text) { $text =~ s/\./\\./gr },
+      },
+    );
 
     my $pod = sub ($name) { "=$name" };
 
@@ -343,7 +380,14 @@ probe sub { 'share' }
 
 share {
   start_url '[% wizard.start_url %]';
+[% IF wizard.latest -%]
+  plugin Download => (
+    filter  => qr/^[% wizard.prefix %].*[% wizard.extract_format | regex_escape %]$/,
+    version => qr/([0-9\.]+)/,
+  );
+[% ELSE -%]
   plugin Download => ();
+[% END -%]
 [% IF wizard.extract_format == 'fixme' -%]
 
   # archive format was not detected, see

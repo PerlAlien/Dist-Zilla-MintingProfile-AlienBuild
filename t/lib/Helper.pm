@@ -17,7 +17,6 @@ package Alien::Build::Wizard::Chrome {
     die "bad self" unless ref $self eq 'Alien::Build::Wizard::Chrome';
     Test2::V0::note(" [ask] $prompt");
     Test2::V0::note(" [default] $default") if defined $default;
-    $DB::single = 1;
     unless($ask{$prompt})
     {
       if($use_default)

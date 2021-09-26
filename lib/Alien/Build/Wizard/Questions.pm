@@ -14,6 +14,11 @@ package Alien::Build::Wizard::Questions {
                                         " - tool: command line tool, often used in building other Aliens\n" .
                                         " - xs:   library that can be used to build XS bindings\n" .
                                         " - ffi:  library that can be used to build FFI bindings\n";
+  use constant QUESTION_LATEST       => "Do you want to install the specific version from the URL above, or the latest version?\n" .
+                                        " - specific: best used when the alienized package may change a lot from version to version.  You can still later change to a " .
+                                        "newer version, but you will have to make a new release of the Alien to do so.\n" .
+                                        " - latest: typically the best option.  If the alienized package provides a relatively stable API new versions will be used " .
+                                        "when available without having to cut a new release of the Alein.";
 
   # ABSTRACT: List of questions
 
