@@ -10,6 +10,10 @@ package Alien::Build::Wizard::Questions {
   use constant QUESTION_HUMAN_NAME   => 'What is the human project name of the alienized package?';
   use constant QUESTION_PKG_NAMES    => 'Which pkg-config names (if any) should be used to detect system install?  You may space separate multiple names.';
   use constant QUESTION_BUILD_SYSTEM => 'Choose build system.';
+  use constant QUESTION_ALIEN_TYPE   => "What use cases will this Alien provide?  You may choose more than one:\n" .
+                                        " - tool: command line tool, often used in building other Aliens\n" .
+                                        " - xs:   library that can be used to build XS bindings\n" .
+                                        " - ffi:  library that can be used to build FFI bindings\n";
 
   # ABSTRACT: List of questions
 

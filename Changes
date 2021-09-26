@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+  - Customize documentation and alienfile based on if tool,
+    xs or ffi is chosen (gh#4, gh#5, gh#14)
   - Fixed bug where detected build system was not set as
     default (gh#10, gh#13)
 
