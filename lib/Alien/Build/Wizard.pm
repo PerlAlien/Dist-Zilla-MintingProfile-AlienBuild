@@ -144,9 +144,17 @@ package Alien::Build::Wizard {
     isa     => 'HashRef[Int]',
     lazy    => 1,
     default => sub ($self) {
-      my @types = $self->chrome->choose(QUESTION_ALIEN_TYPE, ['tool','xs','ffi'], ['xs']);
-      my %answer = map { $_ => 1 } @types;
-      \%answer;
+      while(1)
+      {
+        my @types = $self->chrome->choose(QUESTION_ALIEN_TYPE, ['tool','xs','ffi'], ['xs']);
+        unless(@types)
+        {
+          $self->chrome->say("You must select at least one type");
+          next;
+        }
+        my %answer = map { $_ => 1 } @types;
+        return \%answer;
+      }
     }
   );
 
@@ -348,11 +356,26 @@ share {
   ]
 [% ELSIF wizard.build_type == 'autoconf' -%]
   plugin 'Build::Autoconf';
+[% IF wizard.alien_types.tool AND wizard.alien_types.ffi -%]
   build [
-    '%{configure}',
+    '%{configure} --enable-static --disable-shared',
+    '%{make}',
+    '%{make install',
+  ];
+  ffi {
+    build [
+      '%{configure} --disabled-static --enabled-shared',
+      '%{make}',
+      '%{make install',
+    ];
+  }
+[% ELSE -%]
+  build [
+    '%{configure} --[% IF wizard.alien_types.xs %]enable[% ELSE %]disable[% END %]-static --[% IF wizard.alien_types.ffi %]enable[% ELSE %]disable[% END %]-shared',
     '%{make}',
     '%{make} install',
   ];
+[% END -%]
 [% ELSIF wizard.build_type == 'cmake' -%]
   plugin 'Build::CMake';
   build [
