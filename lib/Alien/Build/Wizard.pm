@@ -60,7 +60,7 @@ package Alien::Build::Wizard {
     isa     => 'Str',
     lazy    => 1,
     default => sub ($self) {
-      $self->chrome->ask('What is the class name for your Alien?', 'Alien::' . $self->detect->name);
+      $self->chrome->ask(QUESTION_CLASS_NAME, 'Alien::' . $self->detect->name);
     },
   );
 
@@ -78,7 +78,7 @@ package Alien::Build::Wizard {
     isa     => 'Str',
     lazy    => 1,
     default => sub ($self) {
-      $self->chrome->ask('What is the human project name of the alienized package?', $self->detect->name);
+      $self->chrome->ask(QUESTION_HUMAN_NAME, $self->detect->name);
     },
   );
 
@@ -87,7 +87,7 @@ package Alien::Build::Wizard {
     isa     => 'ArrayRef[Str]',
     lazy    => 1,
     default => sub ($self) {
-      [split /\s+/, $self->chrome->ask('Which pkg-config names (if any) should be used to detect system install?  You may space separate multiple names.', join ' ', $self->detect->pkg_config->@*)];
+      [split /\s+/, $self->chrome->ask(QUESTION_PKG_NAMES, join ' ', $self->detect->pkg_config->@*)];
     },
   );
 
@@ -135,7 +135,7 @@ package Alien::Build::Wizard {
         $self->chrome->say("Multiple build systems were detected in the tarball; select the most reliable one of: @types");
       }
       my $default = $types[0];
-      $self->chrome->choose("Choose build system.", ['manual','autoconf','cmake','make'], $types[0]);
+      $self->chrome->choose(QUESTION_BUILD_SYSTEM, ['manual','autoconf','cmake','make'], $types[0]);
     },
   );
 
