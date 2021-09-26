@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+
+0.02      2021-09-26 11:07:30 -0600
   - Customize documentation and alienfile based on if tool,
     xs or ffi is chosen (gh#4, gh#5, gh#14)
   - Fixed bug where detected build system was not set as
