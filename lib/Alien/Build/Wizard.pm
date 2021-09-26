@@ -139,6 +139,17 @@ package Alien::Build::Wizard {
     },
   );
 
+  has alien_types => (
+    is      => 'ro',
+    isa     => 'HashRef[Int]',
+    lazy    => 1,
+    default => sub ($self) {
+      my @types = $self->chrome->choose(QUESTION_ALIEN_TYPE, ['tool','xs','ffi'], ['xs']);
+      my %answer = map { $_ => 1 } @types;
+      \%answer;
+    }
+  );
+
   sub generate_content ($self)
   {
     my %files;
@@ -207,8 +218,76 @@ use 5.008004;
 [% wizard.class_name %] - Find or build [% wizard.human_name %]
 
 =head1 SYNOPSIS
+[%- IF wizard.alien_types.xs %]
 
- # TODO
+From L<ExtUtils::MakeMaker>:
+
+ use ExtUtils::MakeMaker;
+ use Alien::Base::Wrapper ();
+ 
+ WriteMakefile(
+   Alien::Base::Wrapper->new('[% wizard.class_name %]')->mm_args2(
+     NAME => 'FOO::XS',
+     ...
+   ),
+ );
+
+From L<Module::Build>:
+
+ use Module::Build;
+ use Alien::Base::Wrapper qw( [% wizard.class_name %] !export );
+ use [% wizard.class_name %];
+ 
+ my $build = Module::Build->new(
+   ...
+   configure_requires => {
+     'Alien::Base::Wrapper' => '0',
+     '[% wizard.class_name %]' => '0',
+     ...
+   },
+   Alien::Base::Wrapper->mb_args,
+   ...
+ );
+ 
+ $build->create_build_script;
+
+From L<Inline::C> / L<Inline::CPP> script:
+
+ use Inline 0.56 with => '[% wizard.class_name %]';
+
+From L<Dist::Zilla>
+
+ [@Filter]
+ -bundle = @Basic
+ -remove = MakeMaker
+ 
+ [Prereqs / ConfigureRequires]
+ [% wizard.class_name %] = 0
+ 
+ [MakeMaker::Awesome]
+ header = use Alien::Base::Wrapper qw( [% wizard.class_name %] !export );
+ WriteMakefile_arg = Alien::Base::Wrapper->mm_args
+[%- END %]
+[%- IF wizard.alien_types.ffi %]
+
+From L<FFI::Platypus>:
+
+ use FFI::Platypus;
+ use [% wizard.class_name %];
+ 
+ my $ffi = FFI::Platypus->new(
+   lib => [ [% wizard.class_name %]->dynamic_libs ],
+ );
+[%- END %]
+[%- IF wizard.alien_types.tool %]
+
+Command line tool:
+
+ use [% wizard.class_name %];
+ use Env qw( @PATH );
+ 
+ unshift @PATH, [% wizard.class_name %]->bin_dir;
+[%- END %]
 
 =head1 DESCRIPTION
 
@@ -230,6 +309,10 @@ Documentation on the Alien concept itself.
 =item L<Alien::Base>
 
 The base class for this Alien.
+
+=item L<Alien::Build::Manual::AlienUser>
+
+Detailed manual for users of Alien classes.
 
 =back
 
