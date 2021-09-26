@@ -15,6 +15,7 @@ use Alien::Build::Wizard::Questions qw( :all );
 %Alien::Build::Wizard::Chrome::choose = (
   QUESTION_BUILD_SYSTEM() => ['cmake','autoconf'],
   QUESTION_ALIEN_TYPE()   => ['tool', 'xs'],
+  QUESTION_LATEST()       => ['latest'],
 );
 
 is(
