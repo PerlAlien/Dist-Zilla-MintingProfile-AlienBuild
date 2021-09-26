@@ -10,6 +10,7 @@ package Alien::Build::Wizard {
   use experimental qw( signatures postderef );
   use Data::Section::Simple qw( get_data_section );
   use Alien::Build::Wizard::Detect;
+  use Alien::Build::Wizard::Questions qw( :all );
   use namespace::autoclean;
 
   # ABSTRACT: Alien distribution creation wizard
@@ -21,7 +22,7 @@ package Alien::Build::Wizard {
     default => sub ($self) {
       for(1..20)
       {
-        my $url = $self->chrome->ask('Enter the full URL to the latest tarball (or zip, etc.) of the project you want to alienize.');
+        my $url = $self->chrome->ask(QUESTION_URL);
 
         if($url eq '')
         {
