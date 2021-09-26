@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+
+0.03      2021-09-26 17:46:19 -0600
   - Customize alienfile for use with the latest or specific
     version of the alienized package (gh#8, gh#16)
 
