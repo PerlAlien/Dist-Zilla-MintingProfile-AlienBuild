@@ -135,7 +135,7 @@ package Alien::Build::Wizard {
         $self->chrome->say("Multiple build systems were detected in the tarball; select the most reliable one of: @types");
       }
       my $default = $types[0];
-      $self->chrome->choose(QUESTION_BUILD_SYSTEM, ['manual','autoconf','cmake','make'], $types[0]);
+      scalar $self->chrome->choose(QUESTION_BUILD_SYSTEM, ['manual','autoconf','cmake','make'], \@types);
     },
   );
 

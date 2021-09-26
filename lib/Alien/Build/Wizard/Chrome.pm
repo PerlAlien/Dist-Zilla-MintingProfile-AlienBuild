@@ -17,6 +17,11 @@ package Alien::Build::Wizard::Chrome {
   }
 
   sub choose ($self, $prompt, $options, $default=undef) {
+    no warnings 'redefine';
+    local *Term::Clui::get_default = sub {
+      return undef unless defined $default && ref $default eq 'ARRAY';
+      wantarray ? $default->@* : $default->[0];      ## no critic (Community::Wantarray)
+    };
     Term::Clui::choose($prompt, $options->@*);
   }
 
