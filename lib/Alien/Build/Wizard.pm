@@ -165,13 +165,15 @@ package Alien::Build::Wizard {
     require Template;
     my $tt = Template->new;
 
+    my $pod = sub ($name) { "=$name" };
+
     {
       my $pm = 'lib/' . $self->class_name . ".pm";
       $pm =~ s{::}{/};
       my $template = get_data_section 'Module.pm';
       $template =~ s/\s+$/\n/;
       die "no template Module.pm" unless $template;
-      $tt->process(\$template, { wizard => $self }, \($files{$pm} = '')) or die $tt->error;
+      $tt->process(\$template, { wizard => $self, pod => $pod }, \($files{$pm} = '')) or die $tt->error;
     }
 
     foreach my $path (qw( alienfile t/basic.t ))
@@ -179,7 +181,7 @@ package Alien::Build::Wizard {
       my $template = get_data_section $path;
       $template =~ s/\s+$/\n/;
       die "no template $path" unless $template;
-      $tt->process(\$template, { wizard => $self }, \($files{$path} = '')) or die $tt->error;
+      $tt->process(\$template, { wizard => $self, pod => $pod }, \($files{$path} = '')) or die $tt->error;
     }
 
     \%files;
@@ -221,11 +223,11 @@ use 5.008004;
 
 1;
 
-=head1 NAME
+[% pod('head1') %] NAME
 
 [% wizard.class_name %] - Find or build [% wizard.human_name %]
 
-=head1 SYNOPSIS
+[% pod('head1') %] SYNOPSIS
 [%- IF wizard.alien_types.xs %]
 
 From L<ExtUtils::MakeMaker>:
@@ -297,7 +299,7 @@ Command line tool:
  unshift @PATH, [% wizard.class_name %]->bin_dir;
 [%- END %]
 
-=head1 DESCRIPTION
+[% pod('head1') %] DESCRIPTION
 
 This distribution provides [% wizard.human_name %] so that it can be used by other
 Perl distributions that are on CPAN.  It does this by first trying to
@@ -306,25 +308,25 @@ will use that.  If it cannot be found, the source code will be downloaded
 from the internet and it will be installed in a private share location
 for the use of other modules.
 
-=head1 SEE ALSO
+[% pod('head1') %] SEE ALSO
 
-=over 4
+[% pod('over') %] 4
 
-=item L<Alien>
+[% pod('item') %] L<Alien>
 
 Documentation on the Alien concept itself.
 
-=item L<Alien::Base>
+[% pod('item') %] L<Alien::Base>
 
 The base class for this Alien.
 
-=item L<Alien::Build::Manual::AlienUser>
+[% pod('item') %] L<Alien::Build::Manual::AlienUser>
 
 Detailed manual for users of Alien classes.
 
-=back
+[% pod('back') %]
 
-=cut
+[% pod('cut') %]
 
 @@ alienfile
 use alienfile;
