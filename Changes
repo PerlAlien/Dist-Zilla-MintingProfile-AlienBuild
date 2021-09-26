@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+  - Customize alienfile for use with the latest or specific
+    version of the alienized package (gh#8, gh#16)
 
 0.02      2021-09-26 11:07:30 -0600
   - Customize documentation and alienfile based on if tool,
