@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+  - Fixed bug where detected build system was not set as
+    default (gh#10, gh#13)
 
 0.01      2021-09-23 13:36:30 -0600
   - initial version

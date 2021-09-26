@@ -52,8 +52,8 @@ package Alien::Build::Wizard::Chrome {
       }
     }
     my $expected_default = $choose{$prompt}->[1];
-    die "unexpected default: $default (expected $expected_default)" if defined $expected_default && $expected_default ne $default;
-    my $answer = $choose{$prompt}->[0] // $default;
+    die "unexpected default: $default (expected $expected_default)" if defined $expected_default && $expected_default ne $default->[0];
+    my $answer = $choose{$prompt}->[0] // $default->[0];
     Test2::V0::note(" > $answer");
     $answer;
   }
