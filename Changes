@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+  - Fix bug where Changes file was generated incorrectly (gh#17)
 
 0.03      2021-09-26 17:46:19 -0600
   - Customize alienfile for use with the latest or specific
