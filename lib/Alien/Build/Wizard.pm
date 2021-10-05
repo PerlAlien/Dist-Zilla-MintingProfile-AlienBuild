@@ -273,7 +273,7 @@ From L<ExtUtils::MakeMaker>:
 
  use ExtUtils::MakeMaker;
  use Alien::Base::Wrapper ();
- 
+
  WriteMakefile(
    Alien::Base::Wrapper->new('[% wizard.class_name %]')->mm_args2(
      NAME => 'FOO::XS',
@@ -286,7 +286,7 @@ From L<Module::Build>:
  use Module::Build;
  use Alien::Base::Wrapper qw( [% wizard.class_name %] !export );
  use [% wizard.class_name %];
- 
+
  my $build = Module::Build->new(
    ...
    configure_requires => {
@@ -297,7 +297,7 @@ From L<Module::Build>:
    Alien::Base::Wrapper->mb_args,
    ...
  );
- 
+
  $build->create_build_script;
 
 From L<Inline::C> / L<Inline::CPP> script:
@@ -309,10 +309,10 @@ From L<Dist::Zilla>
  [@Filter]
  -bundle = @Basic
  -remove = MakeMaker
- 
+
  [Prereqs / ConfigureRequires]
  [% wizard.class_name %] = 0
- 
+
  [MakeMaker::Awesome]
  header = use Alien::Base::Wrapper qw( [% wizard.class_name %] !export );
  WriteMakefile_arg = Alien::Base::Wrapper->mm_args
@@ -323,7 +323,7 @@ From L<FFI::Platypus>:
 
  use FFI::Platypus;
  use [% wizard.class_name %];
- 
+
  my $ffi = FFI::Platypus->new(
    lib => [ [% wizard.class_name %]->dynamic_libs ],
  );
@@ -334,7 +334,7 @@ Command line tool:
 
  use [% wizard.class_name %];
  use Env qw( @PATH );
- 
+
  unshift @PATH, [% wizard.class_name %]->bin_dir;
 [%- END %]
 
@@ -401,7 +401,7 @@ share {
   build [
     # TODO
     # See https://metacpan.org/pod/alienfile#build
-  ]
+  ];
 [% ELSIF wizard.build_type == 'autoconf' -%]
   plugin 'Build::Autoconf';
 [% IF wizard.alien_types.tool AND wizard.alien_types.ffi -%]

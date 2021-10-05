@@ -5,6 +5,7 @@ use Helper;
 use Alien::Build::Wizard::Questions qw( :all );
 use Alien::Build::Wizard;
 use URI;
+use Path::Tiny qw( path );
 
 skip_all 'Test only runs in CI'
   unless defined $ENV{CIPSOMETHING} && $ENV{CIPSOMETHING} eq 'true';
@@ -92,6 +93,17 @@ alien_subtest 'autoconf tool' => sub {
 
 };
 
+alien_subtest 'no pkg-config' => sub {
+
+  my $alienfile_text = Alien::Build::Wizard->new(
+    pkg_names => [],
+  )->generate_content->{'alienfile'};
+  note $alienfile_text;
+  alienfile_ok $alienfile_text;
+  alien_build_ok;
+
+};
+
 alien_subtest 'probe for one .pc' => sub {
 
   local $Alien::Build::Wizard::Chrome::ask{QUESTION_PKG_NAMES()} = [ 'libarchive' ];
@@ -125,11 +137,11 @@ alien_subtest 'fetch latest' => sub {
 
 };
 
-alien_subtest 'no pkg-config' => sub {
+alien_subtest 'cmake' => sub {
 
-  my $alienfile_text = Alien::Build::Wizard->new(
-    pkg_names => [],
-  )->generate_content->{'alienfile'};
+  local $Alien::Build::Wizard::Chrome::ask{QUESTION_URL()} = [path('corpus/alien_build_wizard__ci/libpalindrome.tar.gz')->absolute->stringify];
+  local $Alien::Build::Wizard::Chrome::choose{QUESTION_BUILD_SYSTEM()} = ['cmake'];
+  my $alienfile_text = Alien::Build::Wizard->new->generate_content->{'alienfile'};
   note $alienfile_text;
   alienfile_ok $alienfile_text;
   alien_build_ok;
