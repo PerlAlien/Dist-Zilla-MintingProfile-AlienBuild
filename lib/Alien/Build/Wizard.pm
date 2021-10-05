@@ -377,7 +377,7 @@ plugin PkgConfig => [% IF wizard.pkg_names.size > 1 %][[% FOREACH name IN wizard
 # See Alien::Build::Plugin::Probe and
 # Alien::Build::Plugin::PkgConfig for common
 # probe plugins.
-probe sub { 'share' }
+probe sub { 'share' };
 [% END -%]
 
 share {
@@ -408,18 +408,18 @@ share {
   build [
     '%{configure} --enable-static --disable-shared',
     '%{make}',
-    '%{make install',
+    '%{make} install',
   ];
   ffi {
     build [
-      '%{configure} --disabled-static --enabled-shared',
+      '%{configure} --disable-static --enable-shared',
       '%{make}',
-      '%{make install',
+      '%{make} install',
     ];
   };
 [% ELSE -%]
   build [
-    '%{configure} --[% IF wizard.alien_types.xs %]enable[% ELSE %]disable[% END %]-static --[% IF wizard.alien_types.ffi %]enable[% ELSE %]disable[% END %]-shared',
+    '%{configure} --[% IF wizard.alien_types.xs OR wizard.alien_types.tool %]enable[% ELSE %]disable[% END %]-static --[% IF wizard.alien_types.ffi %]enable[% ELSE %]disable[% END %]-shared',
     '%{make}',
     '%{make} install',
   ];
