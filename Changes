@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}},
 
 {{$NEXT}}
+  - Test name is now based on the generated class name (gh#18)
 
 0.04      2021-10-02 20:53:22 -0600
   - Fix bug where Changes file was generated incorrectly (gh#17)

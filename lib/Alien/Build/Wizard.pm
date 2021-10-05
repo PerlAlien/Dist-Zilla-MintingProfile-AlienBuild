@@ -218,7 +218,9 @@ package Alien::Build::Wizard {
       my $template = get_data_section $path;
       $template =~ s/\s+$/\n/;
       die "no template $path" unless $template;
-      $tt->process(\$template, { wizard => $self, pod => $pod }, \($files{$path} = '')) or die $tt->error;
+      my $store_path = $path;
+      $store_path = "t/@{[ lc($self->class_name =~ s/::/_/gr) ]}.t" if $path eq 't/basic.t';
+      $tt->process(\$template, { wizard => $self, pod => $pod }, \($files{$store_path} = '')) or die $tt->error;
     }
 
     \%files;
