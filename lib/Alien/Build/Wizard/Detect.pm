@@ -56,7 +56,9 @@ package Alien::Build::Wizard::Detect {
       my $res = $ua->get($self->uri);
       die $res->status_line
         unless $res->is_success;
-      \$res->decoded_content;
+      defined $res->decoded_content
+        ? \$res->decoded_content
+        : \$res->content;
     },
   );
 
