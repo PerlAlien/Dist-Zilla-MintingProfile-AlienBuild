@@ -416,7 +416,7 @@ share {
       '%{make}',
       '%{make install',
     ];
-  }
+  };
 [% ELSE -%]
   build [
     '%{configure} --[% IF wizard.alien_types.xs %]enable[% ELSE %]disable[% END %]-static --[% IF wizard.alien_types.ffi %]enable[% ELSE %]disable[% END %]-shared',
@@ -452,4 +452,33 @@ use [% wizard.class_name %];
 alien_diag '[% wizard.class_name %]';
 alien_ok '[% wizard.class_name %]';
 
+[%- IF wizard.alien_types.tool %]
+# run_ok([ ... ])
+#   ->success
+#   ->out_like(qr/ ... /);
+
+[%- END %]
+[%- IF wizard.alien_types.xs %]
+# my $xs = <<'END';
+# #include "EXTERN.h"
+# #include "perl.h"
+# #include "XSUB.h"
+# ...
+#
+# MODULE = main PACKAGE = main
+#
+# ...
+# END
+# xs_ok $xs, with_subtest {
+#   ...
+# };
+
+[%- END %]
+[%- IF wizard.alien_types.ffi %]
+# ffi_ok { symbols => [...] }, with_subtest {
+#   my $ffi = shift;
+#   ...
+# };
+
+[%- END %]
 done_testing;
