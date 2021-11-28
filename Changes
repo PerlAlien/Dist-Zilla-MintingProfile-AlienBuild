@@ -1,6 +1,7 @@
-Revision history for {{$dist->name}}},
+Revision history for {{$dist->name}},
 
 {{$NEXT}}
+  - Remove erroneous extra } from Changes template (gh#20)
 
 0.05      2021-10-05 05:59:09 -0600
   - Test name is now based on the generated class name (gh#18)
