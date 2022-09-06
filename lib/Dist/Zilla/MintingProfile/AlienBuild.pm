@@ -27,6 +27,16 @@ L<[@Starter]|Dist::Zilla::PluginBundle::Starter> or
 L<[@Starter::Git]|Dist::Zilla::PluginBundle::Starter::Git> bundle plus the
 L<[AlienBuild]|Dist::Zilla::Plugin::AlienBuild> plugin.
 
+=head1 CAVEATS
+
+This module indirectly requires both L<Alien::FFI> and L<Alien::Archive3>.  If
+you do not want to build them from source, or do not have internet access where
+the build is happening you will want to pre-install C<libffi> and C<libarchive>.
+On Debian based systems, you can do that with
+C<sudo apt-get update && sudo apt-get install libffi-dev libarchive-dev>.  Note
+that libarchive 3.2.0 is required for a system install so if you have an older
+Debian or Ubuntu system you should upgrade your operating system.
+
 =head1 SEE ALSO
 
 =over 4
