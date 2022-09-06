@@ -16,6 +16,16 @@ based on the [Alien::Build](https://metacpan.org/pod/Alien::Build) framework.  I
 [\[@Starter::Git\]](https://metacpan.org/pod/Dist::Zilla::PluginBundle::Starter::Git) bundle plus the
 [\[AlienBuild\]](https://metacpan.org/pod/Dist::Zilla::Plugin::AlienBuild) plugin.
 
+# CAVEATS
+
+This module indirectly requires both [Alien::FFI](https://metacpan.org/pod/Alien::FFI) and [Alien::Archive3](https://metacpan.org/pod/Alien::Archive3).  If
+you do not want to build them from source, or do not have internet access where
+the build is happening you will want to pre-install `libffi` and `libarchive`.
+On Debian based systems, you can do that with
+`sudo apt-get update && sudo apt-get install libffi-dev libarchive-dev`.  Note
+that libarchive 3.2.0 is required for a system install so if you have an older
+Debian or Ubuntu system you should upgrade your operating system.
+
 # SEE ALSO
 
 - [Alien](https://metacpan.org/pod/Alien)
@@ -31,7 +41,7 @@ Graham Ollis <plicease@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2021 by Graham Ollis.
+This software is copyright (c) 2021-2022 by Graham Ollis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
