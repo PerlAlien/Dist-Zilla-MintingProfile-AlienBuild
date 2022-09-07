@@ -18,7 +18,7 @@ package Alien::Build::Wizard::Questions {
                                         " - specific: best used when the alienized package may change a lot from version to version.  You can still later change to a " .
                                         "newer version, but you will have to make a new release of the Alien to do so.\n" .
                                         " - latest: typically the best option.  If the alienized package provides a relatively stable API new versions will be used " .
-                                        "when available without having to cut a new release of the Alein.";
+                                        "when available without having to cut a new release of the Alien.";
 
   # ABSTRACT: List of questions
 
