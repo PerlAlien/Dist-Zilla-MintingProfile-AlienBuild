@@ -2,3 +2,7 @@ Dist-Zilla-MintingProfile-AlienBuild-*
 /.build/
 *.swp
 /.tmp
+/Dist-Zilla-MintingProfile-AlienBuild-*
+/.build
+*.old
+*.orig
